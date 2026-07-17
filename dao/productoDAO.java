@@ -1,19 +1,18 @@
 package dao;
-import java.util.ArrayList;
-import java.util.List;
 import modelo.producto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+
 import conexion.conexionDB; // Importamos tu conexión
 
 public class productoDAO {
-    public List <producto> Productos = new ArrayList<>();
 
     public void agregarProducto(producto p){
         
-        String sql = "INSERT INTO productos (id, nombre, cantidad, precio) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO productos (nombre, cantidad, precio, fecha_vencimiento) VALUES (?, ?, ?, ?)";
 
         // 2. Abrimos la conexión y preparamos la consulta
         try (Connection con = conexionDB.conectar();
@@ -21,10 +20,10 @@ public class productoDAO {
             
             // 3. Rellenamos los "?" con los datos reales del producto "p"
             // El número indica la posición del "?" de izquierda a derecha (empieza en 1)
-            ps.setInt(1, p.getId());          // Primer "?" -> ID (int)
-            ps.setString(2, p.getNombre());    // Segundo "?" -> Nombre (String)
-            ps.setInt(3, p.getCantidad());    // Tercer "?" -> Cantidad (int)
-            ps.setDouble(4, p.getPrecio());    // Cuarto "?" -> Precio (double)
+            ps.setString(1, p.getNombre());    // Primer "?" -> Nombre (String)
+            ps.setInt(2, p.getCantidad());    // Segundo "?" -> Cantidad (int)
+            ps.setDouble(3, p.getPrecio());    // Tercer "?" -> Precio (double)
+            ps.setObject(4, p.getFechaVencimiento()); // Cuarto "?" -> Fecha de Vencimiento (LocalDate)
             
             // 4. Ejecutamos la acción en la base de datos
             ps.executeUpdate(); 
@@ -50,6 +49,9 @@ public class productoDAO {
 
             boolean tieneDatos = false;
 
+            System.out.printf("| %-5s | %-20s | %-8s | %-12s | %-12s |%n","ID", "Nombre", "Cantidad", "Precio", "Vencimiento");
+            System.out.println("---------------------------------------------------------------------------------");
+
             // 3. El bucle "while" recorre la tabla fila por fila mientras existan registros
             while (rs.next()) {
                 tieneDatos = true;
@@ -59,9 +61,10 @@ public class productoDAO {
                 String nombre = rs.getString("nombre");
                 int cantidad = rs.getInt("cantidad");
                 double precio = rs.getDouble("precio");
+                java.sql.Date fechaVencimiento = rs.getDate("fecha_vencimiento");
 
                 // 4. Imprimimos directamente los datos que acabamos de sacar de la BD
-                System.out.println("ID: " + id + " || Nombre: " + nombre + " || Cantidad: " + cantidad + " || Precio: S/. " + precio);
+                System.out.printf("| %-5d | %-20s | %-8d | S/. %-8.2f | %-12s |%n", id, nombre, cantidad, precio, fechaVencimiento);
             }
 
             if (!tieneDatos) {
@@ -75,7 +78,7 @@ public class productoDAO {
         }
     }
 
-    public void buscarProducto(int idBuscado) {
+    public void buscarProducto(int idBuscado) { //Agregar en su momento 2 formas de buscar tanto por ID y por nombre
         String sql = "SELECT * FROM productos WHERE id = ?;";
 
         // 1. Preparamos la conexión y el Statement (sin ejecutar aún)
@@ -92,6 +95,9 @@ public class productoDAO {
                 System.out.println("          RESULTADO DE LA BÚSQUEDA DEL PRODUCTO          ");
                 System.out.println("=========================================================");
 
+                System.out.printf("| %-5s | %-20s | %-8s | %-12s | %-12s |%n","ID", "Nombre", "Cantidad", "Precio", "Vencimiento");
+                System.out.println("---------------------------------------------------------------------------------");
+
                 // 4. Como solo esperamos 1 resultado, usamos "if" en lugar de "while"
                 if (rs.next()) {
                     // Extraemos los valores directamente, ya sabemos que el ID coincide
@@ -99,23 +105,24 @@ public class productoDAO {
                     String nombre = rs.getString("nombre");
                     int cantidad = rs.getInt("cantidad");
                     double precio = rs.getDouble("precio");
+                    java.sql.Date fechaVencimiento = rs.getDate("fecha_vencimiento");
 
-                    System.out.println("ID: " + id + " || Nombre: " + nombre + " || Cantidad: " + cantidad + " || Precio: S/. " + precio);
+                    System.out.printf("| %-5d | %-20s | %-8d | S/. %-8.2f | %-12s |%n", id, nombre, cantidad, precio, fechaVencimiento);
                 } else {
                     // Si rs.next() es false, significa que la consulta no trajo filas de la BD
-                    System.out.println("❌ No se encontró el producto con el ID: " + idBuscado);
+                    System.out.println("No se encontró el producto con el ID: " + idBuscado);
                 }
                 System.out.println("=========================================================");
             }
             
         } catch (SQLException e) {
-            System.out.println("❌ Error al buscar el producto en la BD: " + e.getMessage());
+            System.out.println("Error al buscar el producto en la BD: " + e.getMessage());
         }
     }
 
-    public void editarProducto(int idBuscado, String nombre, int cantidad, double precio) {
+    public void editarProducto(int idBuscado, String nombre, int cantidad, double precio, LocalDate fechaVencimiento) {
         
-        String sql = "UPDATE productos SET nombre = ?, cantidad = ?, precio = ? WHERE id = ?;";
+        String sql = "UPDATE productos SET nombre = ?, cantidad = ?, precio = ?, fecha_vencimiento = ? WHERE id = ?;";
 
         try (Connection con = conexionDB.conectar();
             PreparedStatement ps = con.prepareStatement(sql)) {
@@ -124,7 +131,8 @@ public class productoDAO {
             ps.setString(1, nombre);     // 1er "?" -> Nuevo Nombre
             ps.setInt(2, cantidad);      // 2do "?" -> Nueva Cantidad
             ps.setDouble(3, precio);     // 3er "?" -> Nuevo Precio
-            ps.setInt(4, idBuscado);     // 4to "?" -> El ID del producto que queremos modificar
+            ps.setObject(4, fechaVencimiento);
+            ps.setInt(5, idBuscado);     // 4to "?" -> El ID del producto que queremos modificar
 
             int filasAfectadas = ps.executeUpdate();
             

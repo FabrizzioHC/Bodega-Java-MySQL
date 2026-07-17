@@ -1,29 +1,23 @@
 package modelo;
+import java.time.LocalDate;
 
 public class producto {
     
-    private int id;
     private String nombre;
     private int cantidad;
     private double precio;
+    private LocalDate fechaVencimiento;
 
     public producto(){
 
     }
 
-    public producto(int id, String nombre, int cantidad, double precio) {
-        this.id = id;
-        this.nombre = nombre;
-        this.cantidad = cantidad;
-        this.precio = precio;
-    }
+    public producto(String nombre, int cantidad, double precio, LocalDate fechaVencimiento) {
 
-    public int getId(){
-        return id;
-    }
-
-    public void setId(int id){
-        this.id = id;
+        setNombre(nombre);
+        setCantidad(cantidad);
+        setPrecio(precio);
+        setFechaVencimiento(fechaVencimiento);
     }
 
     public String getNombre(){
@@ -57,5 +51,16 @@ public class producto {
             throw new IllegalArgumentException("El precio del producto no puede ser negativo!!");
         }
         this.precio = precio;
+    }
+
+    public LocalDate getFechaVencimiento(){
+        return fechaVencimiento;
+    }
+
+    public void setFechaVencimiento(LocalDate fechaVencimiento){
+        if(fechaVencimiento.isBefore(LocalDate.now())){
+            throw new IllegalArgumentException("La fecha de vencimiento no puede ser anterior a la fecha actual!!");
+        }
+        this.fechaVencimiento = fechaVencimiento;
     }
 }

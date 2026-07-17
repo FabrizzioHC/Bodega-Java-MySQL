@@ -1,9 +1,8 @@
 package dao;
 import modelo.producto;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import java.util.InputMismatchException;
+import java.time.LocalDate;
 
 public class test1DAO {
     
@@ -44,15 +43,27 @@ public class test1DAO {
     }
 
     public static void agregarProducto(){
-        int id = (int) ValidarDato("int", "Ingrese el ID del Producto:");
         System.out.println("Ingrese el Nombre del Producto:");
         String nombre = sc.nextLine();
-        int cantidad = (int) ValidarDato ("int", "Ingrese la Cantidad del Producto:");
-        double precion = (double) ValidarDato ("double", "Ingrese el Precio del Producto:");
-        producto p = new producto(id, nombre, cantidad, precion);
-        product.agregarProducto(p);
-        System.out.println("Producto agregado con exito!");
-        sc.nextLine();
+        int cantidad = (int) ValidarDato("int", "Ingrese la Cantidad del Producto:");
+        double precion = (double) ValidarDato("double", "Ingrese el Precio del Producto:");
+        
+        LocalDate fechaVencimiento = null;
+        while (fechaVencimiento == null) {
+            System.out.println("Ingrese la Fecha de Vencimiento del Producto (Año-Mes-Dia, Ej: 2026-12-31):");
+            try {
+                fechaVencimiento = LocalDate.parse(sc.nextLine());
+            } catch (Exception e) {
+                System.out.println("Formato de fecha inválido. Use estrictamente el formato Año-Mes-Dia.");
+            }
+        }
+
+        try {
+            producto p = new producto(nombre, cantidad, precion, fechaVencimiento);
+            product.agregarProducto(p);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error de validación: " + e.getMessage());
+        }
     }
 
     public static void mostrarProductos(){
@@ -70,13 +81,13 @@ public class test1DAO {
 
         int idBuscado = (int) ValidarDato("int", "Ingrese el ID del Producto a Editar:");
         product.buscarProducto(idBuscado);
-        int id = (int) ValidarDato("int", "Ingrese el Nuevo ID del Producto:");
         System.out.println("Ingrese el Nuevo Nombre del Producto:");
         String nombre = sc.nextLine();
         int cantidad = (int) ValidarDato ("int", "Ingrese la Nueva Cantidad del Producto:");
         double precion = (double) ValidarDato ("double", "Ingrese el Nuevo Precio del Producto:");
-        product.editarProducto(idBuscado, id, nombre, cantidad, precion);
-        System.out.println("Producto editado con exito!");
+        System.out.println("Ingrese la Nueva Fecha de Vencimiento del Producto (Año-Mes-Dia):");
+        LocalDate fechaVencimiento = LocalDate.parse(sc.nextLine());
+        product.editarProducto(idBuscado, nombre, cantidad, precion, fechaVencimiento);
         sc.nextLine();
     }
 
