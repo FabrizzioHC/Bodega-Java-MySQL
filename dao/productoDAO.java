@@ -103,66 +103,59 @@ public class productoDAO {
                     System.out.println("ID: " + id + " || Nombre: " + nombre + " || Cantidad: " + cantidad + " || Precio: S/. " + precio);
                 } else {
                     // Si rs.next() es false, significa que la consulta no trajo filas de la BD
-                    System.out.println("No se encontró el producto con el ID: " + idBuscado);
+                    System.out.println("❌ No se encontró el producto con el ID: " + idBuscado);
                 }
                 System.out.println("=========================================================");
             }
             
         } catch (SQLException e) {
-            System.out.println("Error al buscar el producto en la BD: " + e.getMessage());
+            System.out.println("❌ Error al buscar el producto en la BD: " + e.getMessage());
         }
     }
 
-    public void editarProducto(int id, String nombre, int cantidad, double precio){
-
-        String sql = "UPDATE productos SET id = ?, nombre = ?, cantidad = ?, precio = ? WHERE id = ?";
+    public void editarProducto(int idBuscado, String nombre, int cantidad, double precio) {
+        
+        String sql = "UPDATE productos SET nombre = ?, cantidad = ?, precio = ? WHERE id = ?;";
 
         try (Connection con = conexionDB.conectar();
-             PreparedStatement ps = con.prepareStatement(sql);) {
+            PreparedStatement ps = con.prepareStatement(sql)) {
             
-            ps.setInt(1, id);
-            ps.setString(2, nombre);
-            ps.setInt(3, cantidad);
-            ps.setDouble(4, precio);
+            // Ahora solo tenemos 4 signos de interrogación en total:
+            ps.setString(1, nombre);     // 1er "?" -> Nuevo Nombre
+            ps.setInt(2, cantidad);      // 2do "?" -> Nueva Cantidad
+            ps.setDouble(3, precio);     // 3er "?" -> Nuevo Precio
+            ps.setInt(4, idBuscado);     // 4to "?" -> El ID del producto que queremos modificar
 
-            try (ResultSet rs = ps.executeQuery()) {
-                
-                System.out.println("=========================================================");
-                System.out.println("      PRODUCTO EDITADO EXITOSAMENTE EN LA BODEGA         ");
-                System.out.println("=========================================================");
-
-                if (rs.next()) {
-                    
-                    int idNuevo = rs.getInt("id");
-                    String nombreNuevo = rs.getString("nombre");
-                    int cantidadNueva = rs.getInt("cantidad");
-                    double precioNuevo = rs.getDouble("precio");
-
-                    System.out.println("ID: " + idNuevo + " || Nombre: " + nombreNuevo + " || Cantidad: " + cantidadNueva + " || Precio: S/. " + precioNuevo);
-                } else {
-                    // Si rs.next() es false, significa que la consulta no trajo filas de la BD
-                    System.out.println("No se encontró el producto con el ID: " + id);
-                }
-                System.out.println("=========================================================");
+            int filasAfectadas = ps.executeUpdate();
+            
+            if (filasAfectadas > 0) {
+                System.out.println("¡Producto editado con éxito en MySQL!");
+            } else {
+                System.out.println("No se encontró ningún producto con el ID: " + idBuscado);
             }
-
         } catch (SQLException e) {
-            System.out.println("Error al registrar en la BD: " + e.getMessage());
+            System.out.println("Error al editar el producto: " + e.getMessage());
         }
     }
 
     public void eliminarProducto(int idBuscado){
 
-        boolean encontrar = false;
-        for(producto p : Productos){
-            if(p.getId() == idBuscado){
-                Productos.remove(p);
-                System.out.println("Se elimino el Producto" + p.getNombre() + " con el ID: " + idBuscado);
-                encontrar = true;
+        String sql = "DELETE FROM productos WHERE id = ?;";
+        
+        try (Connection con = conexionDB.conectar();
+            PreparedStatement ps = con.prepareStatement(sql)) {
+            
+            // Rellenamos el único "?" con el ID que queremos eliminar
+            ps.setInt(1, idBuscado);// 1er "?" -> El ID del producto que queremos eliminar
+            int filasAfectadas = ps.executeUpdate();
+            
+            if (filasAfectadas > 0) {
+                System.out.println("¡Producto eliminado con éxito en MySQL!");
+            } else {
+                System.out.println("No se encontró ningún producto con el ID: " + idBuscado);
             }
-        }
-        if (!encontrar) {
-            System.out.println("No se encontro el producto con el ID: " + idBuscado);
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar el producto: " + e.getMessage());
         }
     }
 }
