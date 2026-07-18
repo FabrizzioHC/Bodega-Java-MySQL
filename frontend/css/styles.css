@@ -4,183 +4,102 @@
     --text-color: #f3f4f6;
     --text-muted: #9ca3af;
     --primary: #3b82f6;
-    --success: #10b981;
-    --danger: #ef4444;
     --border-color: #2e3a50;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* Configuración General */
+body.gestion-productos {
+    background-color: var(--bg-color);
+    color: var(--text-color);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    padding: 2rem;
-}
-
-header {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-header h1 {
-    font-size: 2.5rem;
+body.gestion-productos header h1 {
     color: var(--primary);
-    margin-bottom: 0.5rem;
 }
 
-header p {
-    color: var(--text-muted);
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 2rem;
-}
-
-@media (max-width: 900px) {
-    .container {
-        grid-template-columns: 1fr;
-    }
-}
-
-.card {
+/* Encapsulado para evitar conflictos futuros en otras vistas */
+.gestion-productos .card {
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 2rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
 }
 
-h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 0.5rem;
+.gestion-productos .text-title {
+    color: var(--text-color);
 }
 
-/* Formularios */
-.input-group {
-    margin-bottom: 1.2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-}
-
-label {
-    font-size: 0.9rem;
+.gestion-productos .text-muted-custom {
     color: var(--text-muted);
 }
 
-input {
+/* Personalización de Formularios de Bootstrap */
+.gestion-productos .form-control-custom {
     background-color: var(--bg-color);
     border: 1px solid var(--border-color);
     color: var(--text-color);
-    padding: 0.75rem;
-    border-radius: 6px;
-    font-size: 1rem;
-    outline: none;
-    transition: border-color 0.2s;
 }
 
-input:focus {
+.gestion-productos .form-control-custom:focus {
+    background-color: var(--bg-color);
     border-color: var(--primary);
+    color: var(--text-color);
+    box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
 }
 
-/* Botones */
-.btn {
-    width: 100%;
-    padding: 0.75rem;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-    margin-top: 0.5rem;
+.gestion-productos .form-control-custom::placeholder {
+    color: #4b5563;
 }
 
-.btn:active {
-    transform: scale(0.98);
+/* Personalización de Tablas de Bootstrap */
+.gestion-productos .custom-table {
+    --bs-table-bg: var(--card-bg) !important;
+    --bs-table-hover-bg: rgba(255, 255, 255, 0.03) !important;
+    color: var(--text-color) !important;
 }
 
-.btn-success { background-color: var(--success); color: white; }
-.btn-success:hover { background-color: #059669; }
-
-.btn-secondary { background-color: #4b5563; color: white; }
-.btn-secondary:hover { background-color: #374151; }
-
-/* Tablas */
-.table-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-.table-header h2 {
-    margin-bottom: 0;
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-.search-box input {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-    width: 250px;
-}
-
-.responsive-table {
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-}
-
-th, td {
-    padding: 1rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-th {
+.gestion-productos .custom-table th {
     color: var(--text-muted);
+    border-bottom: 2px solid var(--border-color);
     font-weight: 600;
 }
 
-tr:hover {
-    background-color: rgba(255, 255, 255, 0.02);
+.gestion-productos .custom-table td {
+    border-bottom: 1px solid var(--border-color);
 }
 
-.btn-action {
+.gestion-productos .table-hover tbody tr:hover {
+    --bs-table-hover-bg: rgba(255, 255, 255, 0.03);
+    color: var(--text-color);
+}
+
+/* Botones de acción dentro de la tabla */
+.gestion-productos .btn-action-custom {
     background: none;
     border: none;
-    cursor: pointer;
-    font-size: 1.1rem;
-    padding: 0.25rem;
-    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
     transition: background-color 0.2s;
 }
 
-.btn-action:hover {
+.gestion-productos .btn-action-custom:hover {
     background-color: var(--border-color);
 }
 
-.hidden { display: none; }
+/* Caja de búsqueda */
+.gestion-productos .search-box input {
+    width: 250px;
+}
+
+/* Fuerza a la sección de la tabla a estirarse y define un tamaño mínimo estático */
+.gestion-productos .col-lg-8 .card {
+    height: 100%;
+    min-height: 300px; /* Esta altura empareja visualmente con el formulario */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Hace que el contenedor de la tabla ocupe todo el espacio disponible hacia abajo */
+.gestion-productos .table-responsive {
+    flex-grow: 1;
+}
