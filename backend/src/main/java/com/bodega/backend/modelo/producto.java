@@ -1,4 +1,4 @@
-package modelo;
+package com.bodega.backend.modelo;
 import java.time.LocalDate;
 
 public class producto {
@@ -58,9 +58,6 @@ public class producto {
     }
 
     public void setFechaVencimiento(LocalDate fechaVencimiento){
-        if(fechaVencimiento.isBefore(LocalDate.now())){
-            throw new IllegalArgumentException("La fecha de vencimiento no puede ser anterior a la fecha actual!!");
-        }
         this.fechaVencimiento = fechaVencimiento;
     }
 }
