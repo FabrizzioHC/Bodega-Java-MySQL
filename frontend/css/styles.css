@@ -73,7 +73,7 @@ body.gestion-productos header h1 {
     color: var(--text-color);
 }
 
-/* Botones de acción dentro de la tabla */
+/* Botones de la tabla */
 .gestion-productos .btn-action-custom {
     background: none;
     border: none;
@@ -86,20 +86,21 @@ body.gestion-productos header h1 {
     background-color: var(--border-color);
 }
 
-/* Caja de búsqueda */
+/* cuadro de búsqueda */
 .gestion-productos .search-box input {
     width: 250px;
 }
 
-/* Fuerza a la sección de la tabla a estirarse y define un tamaño mínimo estático */
 .gestion-productos .col-lg-8 .card {
     height: 100%;
-    min-height: 300px; /* Esta altura empareja visualmente con el formulario */
+    max-height: 500px;
     display: flex;
     flex-direction: column;
 }
 
-/* Hace que el contenedor de la tabla ocupe todo el espacio disponible hacia abajo */
-.gestion-productos .table-responsive {
-    flex-grow: 1;
+/* fijar el encabezado */
+.gestion-productos .custom-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2; 
 }
