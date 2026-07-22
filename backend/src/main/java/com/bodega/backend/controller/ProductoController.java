@@ -15,22 +15,34 @@ public class ProductoController {
     @Autowired
     private productoDAO dao;
 
-    // Ruta 1: GET http://localhost:8080/api/productos (Devuelve la lista de productos en JSON)
+    // OBTENER TODOS (GET)
     @GetMapping
     public List<producto> listar() {
         return dao.obtenerTodos();
     }
 
-    // Ruta 2: POST http://localhost:8080/api/productos (Recibe un JSON y guarda el producto)
+    // CREAR PRODUCTO (POST)
     @PostMapping
     public String guardar(@RequestBody producto p) {
         dao.agregarProducto(p);
         return "¡Producto guardado exitosamente!";
     }
 
-    // GET http://localhost:8080/api/productos/buscar?nombre=Inka
+    // BUSCAR POR NOMBRE (GET con @RequestParam)
     @GetMapping("/buscar")
     public List<producto> buscar(@RequestParam String nombre) {
         return dao.buscarProducto(nombre);
+    }
+
+    //EDITAR PRODUCTO (PUT con @PathVariable + @RequestBody)
+    @PutMapping("/{id}")
+    public void editar(@PathVariable int idBuscado, @RequestBody producto p) {
+        dao.editarProducto(idBuscado, p);
+    }
+
+    //ELIMINAR PRODUCTO (DELETE con @PathVariable)
+    @DeleteMapping("/{id}")
+    public void editar(@PathVariable int idSeleccionado) {
+        dao.eliminarProducto(idSeleccionado);
     }
 }

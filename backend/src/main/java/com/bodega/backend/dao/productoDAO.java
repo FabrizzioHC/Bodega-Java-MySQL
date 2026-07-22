@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,7 +103,51 @@ public class productoDAO {
 
     // intento de hacer el metodo Editar:
 
-    public void editarProducto (int id){
+    public void editarProducto (int idBuscado, producto p){
+        String sql = "UPDATE productos SET nombre = ?, cantidad = ?, precio = ?, fecha_vencimiento = ? WHERE id = ?;";
 
+        try(Connection con = conectar();
+            PreparedStatement ps = con.prepareStatement(sql)){
+            
+            ps.setString(1, p.getNombre());
+            ps.setInt(2, p.getCantidad());
+            ps.setDouble(3, p.getPrecio());
+            ps.setObject(4, p.getFechaVencimiento()); // "OBJECT" Soporta LocalDate directamente sin conversiones
+            ps.setInt(5, idBuscado);
+
+            int lineasModificadas = ps.executeUpdate();
+
+            if (lineasModificadas > 0) {
+                System.out.println("¡Los datos del producto " + idBuscado + " fueron modificados correctamente!");
+            } else {
+                System.out.println("No se encontró ningún producto con el ID " + idBuscado);
+            }
+
+        }catch(SQLException e){
+            System.out.println("Hubo un error al Editar el Producto: "+e.getMessage());
+        }
+    }
+
+    //eliminar
+    public void eliminarProducto (int idSeleccionado){
+        String sql = "DELETE FROM productos WHERE id = ?;";
+
+        try(Connection con = conectar();
+            PreparedStatement ps = con.prepareStatement(sql)){
+            
+            ps.setInt(1, idSeleccionado);
+
+
+            int lineasModificadas = ps.executeUpdate();
+
+            if (lineasModificadas > 0) {
+                System.out.println("¡Los datos del producto " + idSeleccionado + " fueron eliminados correctamente!");
+            } else {
+                System.out.println("No se encontró ningún producto con el ID " + idSeleccionado);
+            }
+
+        }catch(SQLException e){
+            System.out.println("Hubo un error al Eliminar el Producto: "+e.getMessage());
+        }
     }
 }
