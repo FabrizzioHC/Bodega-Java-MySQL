@@ -27,4 +27,10 @@ public class ProductoController {
         dao.agregarProducto(p);
         return "¡Producto guardado exitosamente!";
     }
+
+    // GET http://localhost:8080/api/productos/buscar?nombre=Inka
+    @GetMapping("/buscar")
+    public List<producto> buscar(@RequestParam String nombre) {
+        return dao.buscarProducto(nombre);
+    }
 }

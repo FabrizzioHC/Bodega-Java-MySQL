@@ -3,6 +3,7 @@ import java.time.LocalDate;
 
 public class producto {
     
+    private int id;
     private String nombre;
     private int cantidad;
     private double precio;
@@ -12,12 +13,22 @@ public class producto {
 
     }
 
-    public producto(String nombre, int cantidad, double precio, LocalDate fechaVencimiento) {
+    public producto(int id, String nombre, int cantidad, double precio, LocalDate fechaVencimiento) {
 
+        this.id = id;
         setNombre(nombre);
         setCantidad(cantidad);
         setPrecio(precio);
         setFechaVencimiento(fechaVencimiento);
+    }
+
+
+    public int getId(){
+        return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
     }
 
     public String getNombre(){

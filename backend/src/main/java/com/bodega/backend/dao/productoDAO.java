@@ -1,5 +1,4 @@
-package com.bodega.backend.dao;
-
+package com.bodega.backend.dao; //para activar la ayuda de copilot( ctrl + shift + P ) y luego escribes Copilot: Enable
 import com.bodega.backend.modelo.producto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -35,12 +34,13 @@ public class productoDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
+                int id = rs.getInt("id");
                 String nombre = rs.getString("nombre");
                 int cantidad = rs.getInt("cantidad");
                 double precio = rs.getDouble("precio");
                 Date fecha = rs.getDate("fecha_vencimiento");
 
-                producto p = new producto(nombre, cantidad, precio, fecha.toLocalDate());
+                producto p = new producto(id, nombre, cantidad, precio, fecha.toLocalDate());
                 lista.add(p);
             }
         } catch (SQLException e) {
@@ -66,5 +66,43 @@ public class productoDAO {
         } catch (SQLException e) {
             System.out.println("Error al registrar en la BD: " + e.getMessage());
         }
+    }
+
+    // en teoria ya no se necesitaria el mostrar?, por que los datos ya se estan vizualizando en el front en la parte de app.js
+
+    // buscar producto por nombrwe
+    public List<producto> buscarProducto(String nombre){
+        List<producto> lista = new ArrayList<>();
+
+        String sql = "SELECT * FROM productos WHERE nombre LIKE ?;";
+
+        try(Connection con = conectar();
+            PreparedStatement ps = con.prepareStatement(sql)){
+            
+            ps.setString(1, "%"+ nombre +"%"); // aca declaramos que el ? sera nombre
+
+            try(ResultSet rs = ps.executeQuery()){
+                while (rs.next()) {
+                    producto p = new producto(
+                        rs.getInt("id"),
+                        rs.getString("nombre"),
+                        rs.getInt("cantidad"),
+                        rs.getDouble("precio"),
+                        rs.getDate("fecha_vencimiento").toLocalDate()
+                    );
+                    lista.add(p);
+                }
+            }
+
+        }catch(SQLException e){
+            System.out.println("No se pudo encontrar el Producto que esta buscando"+e.getMessage());
+        }
+        return lista;
+    }
+
+    // intento de hacer el metodo Editar:
+
+    public void editarProducto (int id){
+
     }
 }
