@@ -34,15 +34,16 @@ public class ProductoController {
         return dao.buscarProducto(nombre);
     }
 
+    //ACORDARTE QUE TIENES QU COLOCAR BIEN EL NOMBRE DE LAS VARIABLES xd
     //EDITAR PRODUCTO (PUT con @PathVariable + @RequestBody)
     @PutMapping("/{id}")
-    public void editar(@PathVariable int idBuscado, @RequestBody producto p) {
-        dao.editarProducto(idBuscado, p);
+    public void editar(@PathVariable int id, @RequestBody producto p) {
+        dao.editarProducto(id, p);
     }
 
     //ELIMINAR PRODUCTO (DELETE con @PathVariable)
     @DeleteMapping("/{id}")
-    public void editar(@PathVariable int idSeleccionado) {
-        dao.eliminarProducto(idSeleccionado);
+    public void editar(@PathVariable int id) {
+        dao.eliminarProducto(id);
     }
 }
