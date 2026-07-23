@@ -1,4 +1,4 @@
-// URL base de tu API corriendo en Spring Boot
+// URL base de tu API
 const API_URL = "http://localhost:8080/api/productos";
 
 // Elementos del DOM
@@ -9,17 +9,31 @@ const inputCantidad = document.getElementById("cantidad");
 const inputPrecio = document.getElementById("precio");
 const inputVencimiento = document.getElementById("vencimiento");
 
-// 1. CARGAR PRODUCTOS DESDE LA API REAL (GET)
-async function cargarProductos() {
+// CARGAR PRODUCTOS DESDE LA API REAL (GET)
+async function cargarProductos(terminoBusqueda = "") {
+
+    if (typeof terminoBusqueda !== "string") {
+        terminoBusqueda = "";
+    }
+
     try {
+
+        // Por defecto pide todos los productos
+        let url = API_URL;
+
+        // Si el usuario escribió algo en el buscador, cambiamos la URL a la ruta /buscar
+        if (terminoBusqueda.trim() !== "") {
+            url = `${API_URL}/buscar?nombre=${encodeURIComponent(terminoBusqueda)}`;
+        }
+
         // Hacemos la petición a Java
-        const respuesta = await fetch(API_URL);
+        const respuesta = await fetch(url);
         const productos = await respuesta.json();
 
         // Limpiamos la tabla
         tablaProductos.innerHTML = "";
 
-        if (productos.length === 0) {
+        if (productos.length === 0) { // cuando no hay productos en la base de datos
             tablaProductos.innerHTML = `
                 <tr>
                     <td colspan="6" class="text-center text-muted py-4">
@@ -31,11 +45,10 @@ async function cargarProductos() {
 
 
         // Pintamos los datos reales que llegaron de MySQL
-        productos.forEach((p, index) => {
-            
+        productos.forEach((p) => { 
             const tr = document.createElement("tr");
             tr.innerHTML = `
-                <td>${index + 1}</td>
+                <td>${p.id}</td>
                 <td class="fw-semibold">${p.nombre}</td>
                 <td>${p.cantidad}</td>
                 <td>S/. ${Number(p.precio).toFixed(2)}</td>
@@ -59,7 +72,7 @@ async function cargarProductos() {
     }
 }
 
-// 2. ENVIAR UN NUEVO PRODUCTO A LA API REAL (POST)
+// ENVIAR UN NUEVO PRODUCTO A LA API REAL (POST) ==== AGREGAR
 productoForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -93,6 +106,17 @@ productoForm.addEventListener("submit", async (e) => {
         console.error("Error al guardar:", error);
     }
 });
+
+// Seleccionamos el campo de texto del buscador
+const inputBuscar = document.querySelector("input[placeholder*='Buscar']");
+
+// mira si hay texto en la caja de busqueda
+if (inputBuscar) {
+    inputBuscar.addEventListener("input", (e) => {
+        // agarramos el texto dentro de la caja de busqueda
+        cargarProductos(e.target.value);
+    });
+}
 
 // Cargar la lista apenas abra la página
 document.addEventListener("DOMContentLoaded", cargarProductos);
